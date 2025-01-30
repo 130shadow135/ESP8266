@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suivi de la Poubelle</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        img {
+            width: 200px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>État de la Poubelle</h1>
+    <p id="status">Connexion en cours...</p>
+    <img id="poubelleImage" src="empty.png" alt="Poubelle">
+
+    <script>
+        const socket = new WebSocket('ws://192.168.1.76:81/'); // IP de ton ESP8266
+
+        socket.onopen = function() {
+            document.getElementById("status").innerText = "Connecté";
+        };
+
+        socket.onmessage = function(event) {
+            try {
+                let data = JSON.parse(event.data);
+                let distance = parseInt(data.distance);
+                let imageElement = document.getElementById("poubelleImage");
+
+                if (distance <= 10) {
+                    imageElement.src = ""; // Poubelle pleine
+                } else {
+                    imageElement.src = "https://www.pngmart.com/files/6/Full-Trash-Can-PNG-File.png"; // Poubelle vide
+                }
+            } catch (e) {
+                console.error("Erreur lors du traitement des données WebSocket", e);
+            }
+        };
+
+        socket.onerror = function(error) {
+            document.getElementById("status").innerText = "Erreur de connexion";
+        };
+
+        socket.onclose = function() {
+            document.getElementById("status").innerText = "Connexion fermée";
+        };
+    </script>
+</body>
+</html>
