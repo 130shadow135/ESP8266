@@ -62,7 +62,7 @@
     <img id="poubelleImage" src="b.png" alt="Poubelle">
 
     <script>
-        const socket = new WebSocket('ws://192.168.125.153:81/'); // IP de ton ESP8266
+        const socket = new WebSocket('ws://192.168.43.153:81/'); // IP de ton ESP8266
 
         socket.onopen = function() {
             document.getElementById("status").innerText = "Connecté";
